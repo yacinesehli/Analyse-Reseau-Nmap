@@ -1,0 +1,173 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{graphicx}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{float}
+
+% --- Couleurs et Styles ---
+\definecolor{KaliBlue}{HTML}{2B5876}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+
+\lstdefinestyle{terminal}{
+  basicstyle=\small\ttfamily,
+  backgroundcolor=\color{white},
+  frame=single,
+  rulecolor=\color{KaliBlue},
+  breaklines=true,
+  keywordstyle=\color{blue},
+  captionpos=b,
+  numbers=left,
+  numberstyle=\tiny\color{codegray}
+}
+\lstset{style=terminal}
+
+\titleformat{\section}[block]{\color{KaliBlue}\large\bfseries\filcenter}{\thesection}{1em}{}
+
+% --- En-tête et Pied de page ---
+\pagestyle{fancy}
+\fancyhead[L]{\textbf{Analyse Réseau Nmap/Zenmap}}
+\fancyhead[R]{\textbf{Yacine SEHLI}}
+\fancyfoot[C]{\thepage}
+
+% --- TITRE ---
+\title{\textbf{\Huge Analyse de Réseau Local avec Nmap et Zenmap}}
+\author{Yacine SEHLI \\ \small Étudiant passionné en cybersécurité et réseaux}
+\date{Octobre 2025}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Ce projet présente une analyse complète du réseau local réalisée à l'aide des outils \textbf{Nmap} et \textbf{Zenmap}. L'objectif était de découvrir les hôtes actifs, d'identifier les ports ouverts et de reconnaître les systèmes d'exploitation afin d'évaluer la sécurité du réseau. Le projet a été mené sur une période de deux jours, en utilisant un environnement Kali Linux configuré sur une machine virtuelle.
+\end{abstract}
+
+\newpage
+\tableofcontents
+\newpage
+
+\section{Introduction}
+[cite_start]La sécurité des réseaux est un enjeu majeur dans le domaine de la cybersécurité[cite: 1, 3, 17]. [cite_start]Pour tout administrateur ou analyste SOC, la connaissance des outils de scan réseau est essentielle pour détecter les vulnérabilités potentielles[cite: 18]. [cite_start]\textbf{Nmap} (Network Mapper) est un des outils les plus puissants pour cette tâche, et \textbf{Zenmap} constitue son interface graphique conviviale[cite: 2, 19].
+
+[cite_start]Ce rapport documente les différentes étapes de la mise en œuvre d'un scan réseau local, effectué sur l'adresse \texttt{192.168.1.1}, ainsi que l'analyse et l'interprétation des résultats obtenus[cite: 20].
+
+\section{Présentation de Nmap et Zenmap}
+
+\subsection{Nmap}
+[cite_start]Nmap est un outil open source utilisé pour l'exploration réseau et l'audit de sécurité[cite: 24]. [cite_start]Il permet de découvrir les hôtes présents sur un réseau, les ports ouverts, les services disponibles et les systèmes d'exploitation associés[cite: 25].
+
+\subsection{Zenmap}
+[cite_start]Zenmap est l'interface graphique officielle de Nmap[cite: 27]. Elle facilite la création, la sauvegarde et la visualisation des scans, notamment à travers des profils prédéfinis comme le << Intense Scan >>.
+
+\section{Objectifs du projet}
+[cite_start]Les objectifs principaux de ce projet étaient[cite: 30, 31, 32, 33, 34]:
+\begin{itemize}
+    \item Comprendre le fonctionnement des commandes Nmap et Zenmap.
+    \item Effectuer un scan complet d'un hôte local (\texttt{192.168.1.1}).
+    \item Identifier les ports et services ouverts.
+    \item Analyser le type de système détecté.
+    \item Présenter les résultats dans un rapport professionnel.
+\end{itemize}
+
+\section{Environnement et configuration}
+
+\subsection{Matériel et logiciel utilisés}
+\begin{itemize}
+    [cite_start]\item \textbf{Système d'exploitation :} Kali Linux 2025 [cite: 38]
+    [cite_start]\item \textbf{Outils :} Nmap 7.95 et Zenmap GUI [cite: 38]
+    [cite_start]\item \textbf{Virtualisation :} Oracle VirtualBox [cite: 38]
+    [cite_start]\item \textbf{Cible :} 192.168.1.1 (Routeur / Passerelle locale) [cite: 39]
+\end{itemize}
+
+\subsection{Préparation du scan}
+[cite_start]Le scan a été réalisé dans un environnement isolé, sans impact sur le réseau de production[cite: 41]. [cite_start]Les permissions administrateur (\texttt{sudo}) ont été utilisées pour garantir un scan complet et précis (SYN Scan)[cite: 42].
+
+\section{Méthodologie et commandes utilisées}
+
+\subsection{Scan Nmap en ligne de commande}
+[cite_start]Nous avons d'abord effectué un scan complet de tous les ports TCP pour identifier la surface d'attaque globale[cite: 46, 47, 48].
+
+\begin{lstlisting}[caption={Scan complet des ports TCP}]
+nmap -p0-65535 192.168.1.1
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{../evidence/nmap_full_scan.png}
+    \caption{Résultat du scan Nmap en ligne de commande (Ports ouverts).}
+\end{figure}
+
+\subsection{Scan approfondi avec détection d'OS et de services}
+[cite_start]Ensuite, un scan plus agressif a été lancé pour identifier les versions et l'OS[cite: 49, 50, 51].
+
+\begin{lstlisting}[caption={Scan avancé avec détection complète}]
+nmap -p1-65535 -T4 -A -v 192.168.1.1
+\end{lstlisting}
+
+[cite_start]\textbf{Les options utilisées[cite: 52, 53, 54, 55, 56]:}
+\begin{itemize}
+    \item \texttt{-p1-65535} : scan de tous les ports TCP.
+    \item \texttt{-T4} : vitesse du scan augmentée (Aggressive).
+    \item \texttt{-A} : détection de l'OS, des versions de services et traceroute.
+    \item \texttt{-v} : mode verbeux (affiche les détails en temps réel).
+\end{itemize}
+
+\section{Résultats et interprétation}
+
+\subsection{Analyse des Ports et Services}
+[cite_start]Les ports suivants ont été détectés ouverts sur l'hôte[cite: 60, 61, 62, 63, 67, 68, 69]:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Port} & \textbf{Service} & \textbf{Description} \\ \hline
+53/tcp & Domain & Service DNS (dnsmasq) \\ \hline
+80/tcp & HTTP & Serveur Web (Boa httpd) \\ \hline
+139/tcp & NetBIOS-ssn & Samba (Partage de fichiers) \\ \hline
+445/tcp & Microsoft-DS & Samba (Partage de fichiers) \\ \hline
+2000/tcp & Cisco-SCCP & Protocole VoIP (Skinny) \\ \hline
+5060/tcp & SIP & Session Initiation Protocol (VoIP) \\ \hline
+\end{tabular}
+\caption{Tableau récapitulatif des services découverts}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{../evidence/nmap_service_scan.png}
+    \caption{Détail des versions de services détectées (Samba, Boa httpd).}
+\end{figure}
+
+\subsection{Analyse Zenmap}
+[cite_start]L'interface Zenmap a permis de visualiser la progression et les détails de l'OS[cite: 144].
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{../evidence/zenmap_results.jpg}
+    \caption{Résultat Zenmap : Détection de l'OS (Oracle VirtualBox / Linux).}
+\end{figure}
+
+[cite_start]\textbf{Interprétation :} Les services détectés (SIP, SCCP, DNS) indiquent que la machine cible agit probablement comme un équipement de communication (Passerelle VoIP) ou un routeur virtuel (VirtualBox NAT)[cite: 71, 72].
+
+\section{Analyse critique et bonnes pratiques}
+[cite_start]Lors de cet audit, les bonnes pratiques suivantes ont été respectées[cite: 197, 198, 199]:
+\begin{itemize}
+    \item Vérifier les permissions et la portée du scan avant exécution.
+    \item Utiliser les options Nmap de façon responsable.
+    \item Documenter chaque commande pour assurer la traçabilité.
+    \item Compléter l’analyse avec d’autres outils (Wireshark, Nikto) pour une vision plus approfondie.
+\end{itemize}
+
+\section{Conclusion}
+[cite_start]Ce projet m’a permis de maîtriser les fonctionnalités essentielles de Nmap et Zenmap en seulement deux jours[cite: 200]. [cite_start]L’analyse m’a offert une meilleure compréhension de la topologie réseau, de l’identification des ports et des services, ainsi que de la détection d’OS[cite: 201].
+
+[cite_start]À l’avenir, je compte approfondir mes connaissances en automatisant les scans via des scripts NSE et en couplant les résultats à des outils d’analyse de vulnérabilités[cite: 202].
+
+\end{document}
